@@ -11,36 +11,13 @@ app = Flask(__name__)
 CORS(app)
 
 
-@app.route('/balance/<businessId>', methods=['GET'])
-def balance(businessId):
+@app.route('/<action>/<businessId>', methods=['GET'])
+def get_data(action, businessId):
     if not auth.check_access(headers=request.headers, businessId=businessId):
       return make_response(json.dumps({'error': 'access not granted'}), 400, {'Content-Type': 'application/json'})
 
-    res = billing.get_balance(businessId)
+    res = billing.get_action(action, businessId, headers=request.headers, params=request.args)
     print(res)
 
     return make_response(json.dumps(res), 200, {'Content-Type': 'application/json'})
 
-
-@app.route('/operations/<businessId>', methods=['GET'])
-def operations(businessId):
-    if not auth.check_access(headers=request.headers, businessId=businessId):
-      return make_response(json.dumps({'error': 'access not granted'}), 400, {'Content-Type': 'application/json'})
-
-    res = billing.get_operations(businessId)
-    print(res)
-
-    return make_response(json.dumps(res), 200, {'Content-Type': 'application/json'})
-
-@app.route('/operations/<businessId>/<date>', methods=['GET'])
-def operations_date(businessId, date):
-    if not auth.check_access(headers=request.headers, businessId=businessId):
-      return make_response(json.dumps({'error': 'access not granted'}), 400, {'Content-Type': 'application/json'})
-
-    res = billing.get_operations(businessId, date)
-    print(res)
-
-    return make_response(json.dumps(res), 200, {'Content-Type': 'application/json'})
-
-if __name__ == "__main__":
-    app.run(host='0.0.0.0')
