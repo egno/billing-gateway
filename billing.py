@@ -1,10 +1,13 @@
 from requests import get
-from config import CONFIG as config
+from dotenv import load_dotenv
+import os
 
-BILLING_API = config['BILLING_API']
+load_dotenv()
+
+BILLING_API_URL = os.getenv('BILLING_API_URL')
 
 def get_action(action, businessId, headers, params):
-    url = BILLING_API['URL'] + action
+    url = f'{BILLING_API_URL}/{action}'
     request_headers = dict([(name, value) for (name, value) in (dict(headers)).items() if name.lower() not in ['authorization']])
     request_params = dict(params)
     request_params['business'] = 'eq.'+businessId

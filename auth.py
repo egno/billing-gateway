@@ -1,11 +1,13 @@
 from requests import get
-from config import CONFIG as config
+from dotenv import load_dotenv
+import os
 
-AUTH_API = config['AUTH_API']
+load_dotenv()
 
+AUTH_API_URL = os.getenv('AUTH_API_URL')
 
 def check_access(headers, businessId = None):
-  url = AUTH_API['URL'] + 'business/' + businessId
+  url = AUTH_API_URL + '/business/' + businessId
 
   res = get(url, headers={'Authorization': headers['Authorization']}, timeout=3)
   j = res.json()
